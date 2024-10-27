@@ -141,7 +141,7 @@ usb_dev_add(pcap_if_list_t *devlistp, int n, char *err_str)
 {
 	char dev_name[10];
 	char dev_descr[30];
-	snprintf(dev_name, 10, USB_IFACE"%d", n);
+	snprintf(dev_name, sizeof(dev_name), USB_IFACE"%d", n);
 	/*
 	 * XXX - is there any notion of "up" and "running"?
 	 */
@@ -162,7 +162,7 @@ usb_dev_add(pcap_if_list_t *devlistp, int n, char *err_str)
 		 * PCAP_IF_CONNECTION_STATUS_CONNECTED or
 		 * PCAP_IF_CONNECTION_STATUS_DISCONNECTED?
 		 */
-		snprintf(dev_descr, 30, "Raw USB traffic, bus number %d", n);
+		snprintf(dev_descr, sizeof(dev_descr), "Raw USB traffic, bus number %d", n);
 		if (pcapint_add_dev(devlistp, dev_name, 0, dev_descr, err_str) == NULL)
 			return -1;
 	}
@@ -419,9 +419,7 @@ usb_create(const char *device, char *ebuf, int *is_ours)
 	pcap_t *p;
 
 	/* Does this look like a USB monitoring device? */
-	cp = strrchr(device, '/');
-	if (cp == NULL)
-		cp = device;
+	cp = device;
 	/* Does it begin with USB_IFACE? */
 	if (strncmp(cp, USB_IFACE, sizeof USB_IFACE - 1) != 0) {
 		/* Nope, doesn't begin with USB_IFACE */
